@@ -15,6 +15,7 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
+//get 
 router.get('/files', async (req, res) => {
   try {
     const documents = await Document.find();
@@ -23,7 +24,7 @@ router.get('/files', async (req, res) => {
     res.status(500).json({ error: 'Failed to get documents' });
   }
 });
-
+//post
 router.post('/upload', upload.single('file'), async (req, res) => {
   try {
     const document = new Document({
@@ -38,7 +39,7 @@ router.post('/upload', upload.single('file'), async (req, res) => {
     res.status(500).json({ error: 'Failed to upload document' });
   }
 });
-
+//delete
 router.delete('/files/:id', async (req, res) => {
   try {
     const id = req.params.id;
