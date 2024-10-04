@@ -103,7 +103,7 @@ const Homepage = () => {
         `http://localhost:3001/api/documents/delete/${id}`
       );
       if (response.status === 200) {
-        setFiles((prevDocuments) =
+        setFiles((prevDocuments) =>
           prevDocuments.filter((file) => file._id !== id)
         );
       }
