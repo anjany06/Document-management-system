@@ -24,6 +24,19 @@ router.get('/files', async (req, res) => {
     res.status(500).json({ error: 'Failed to get documents' });
   }
 });
+
+router.put('/documents/:id', async (req, res) => {
+  try {
+      const document = await Document.findByIdAndUpdate(req.params.id, req.body, { new: true });
+      if (!document) {
+          return res.status(404).json({ message: 'Document not found' });
+      }
+      res.json(document);
+  } catch (err) {
+      res.status(400).json({ message: err.message });
+  }
+});
+
 //post
 router.post('/upload', upload.single('file'), async (req, res) => {
   try {
