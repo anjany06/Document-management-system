@@ -1,5 +1,6 @@
 // updated
 const express = require('express');
+const fs = require('fs');
 const router = express.Router();
 const multer = require('multer');
 const Document = require('../models/Document');
@@ -53,14 +54,40 @@ router.post('/upload', upload.single('file'), async (req, res) => {
   }
 });
 //delete
-router.delete('/files/:id', async (req, res) => {
+  router.delete('/delete/:id', async (req, res) => {
+    try {
+      const documentId = req.params.id;
+      await Document.findByIdAndDelete(documentId);
+      res.status(200).send('Document deleted successfully');
+    } catch (error) {
+      console.error("Error deleting document:", error);
+      res.status(500).send('Error deleting document');
+    }
+  });
+//view
+router.get('/view/:id', async (req, res) => {
   try {
-    const id = req.params.id;
-    await Document.findByIdAndDelete(id);
-    res.status(200).json({ message: 'Document deleted successfully' });
+    const documentId = req.params.id;
+    console.log(documentId);
+    const document = await Document.findById(documentId);
+    console.log(document);
+    res.json({
+      document
+    });
+    return;
+    if (!document) {
+      return res.status(404).send('Document not found');
+    }
+    const filePath = `./uploads/${document.filePath}`;
+    if (!fs.existsSync(filePath)) {
+      return res.status(404).send('Document not found');
+    }
+    res.send(filePath);
   } catch (error) {
-    res.status(500).json({ error: 'Failed to delete document' });
+    console.error(error);
+    res.status(500).send('Error viewing document');
   }
 });
+
 
 module.exports = router;

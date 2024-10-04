@@ -17,7 +17,7 @@ const Homepage = () => {
   useEffect(() => {
     // Get all files on component mount
     axios
-      .get("http://localhost:3000/api/documents/files")
+      .get("http://localhost:3001/api/documents/files")
       .then((response) => {
         setFiles(response.data);
       })
@@ -54,15 +54,27 @@ const Homepage = () => {
     formData.append("description", description);
 
     axios
-      .post("http://localhost:3000/api/documents/upload", formData)
+      .post("http://localhost:3001/api/documents/upload", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      })
       .then((response) => {
-        setFiles([...files, response.data]);
+        axios
+          .get("http://localhost:3001/api/documents/files")
+          .then((response) => {
+            setFiles(response.data);
+          })
+          .catch((error) => {
+            console.error(error);
+          });
         setUploading(false);
       })
       .catch((error) => {
         console.error(error);
         setUploading(false);
       });
+    setFile(null);
+    setFileName("");
+    setDescription("");
   };
 
   // const newFile = {
@@ -72,25 +84,57 @@ const Homepage = () => {
   //   size: "167kb",
   // };
 
-  const handleDelete = (id) => {
-    axios
-      .delete(`/api/files/${id}`)
-      .then((response) => {
-        setFiles(files.filter((file) => file.id !== id));
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  };
+  // const handleDelete = aysnc (id) => {
+  //   try{
+  //     const response = await axios.delete(`http://localhost:3001/api/documents/files/delete/${id}`);
+  //     if(response.status === 200){
 
+  //     }
+  //     .then((response) => {
+  //       setFiles(files.filter((file) => file.id !== id));
+  //     })
+  //     .catch((error) => {
+  //       console.error(error);
+  //     });
+
+  const handleDelete = async (id) => {
+    try {
+      const response = await axios.delete(
+        `http://localhost:3001/api/documents/delete/${id}`
+      );
+      if (response.status === 200) {
+        setFiles((prevDocuments) =
+          prevDocuments.filter((file) => file._id !== id)
+        );
+      }
+    } catch (error) {
+      console.error("Error deleting document:", error);
+    }
+  };
   const handleSearch = (event) => {
     setSearchTerm(event.target.value);
   };
-  const filteredFiles = Array.isArray(files)
-    ? files.filter((file) =>
-        file.fileName.toLowerCase().includes(searchTerm.toLowerCase())
-      )
-    : [];
+  const filteredDocuments = files.filter(
+    (file) =>
+      file.title && file.title.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+  const viewDocument = async (id) => {
+    try {
+      console.log(id);
+      const response = await axios.get(
+        `http://localhost:3001/api/documents/view/${id}`
+      );
+      console.log(response);
+      // const url = window.URL.createObjectURL(new Blob([response.data]));
+      // const link = document.createElement("a");
+      // link.href = url;
+      // document.body.appendChild(link);
+      // link.click();
+    } catch (error) {
+      console.error("Error viewing document:", error);
+    }
+  };
+
   return (
     <>
       <nav className="flex justify-between px-10 py-3 ">
@@ -109,7 +153,10 @@ const Homepage = () => {
           </label>
           <button
             className="bg-[#4459FD] items-center p-2 rounded-xl flex text-white gap-1"
-            onClick={handleUpload}
+            onClick={(e) => {
+              e.preventDefault(); // prevent page reload
+              handleUpload();
+            }}
           >
             Upload File
           </button>
@@ -165,6 +212,14 @@ const Homepage = () => {
             value={searchTerm}
             onChange={handleSearch}
           />
+          {/* <div>
+            {filteredDocuments.map((doc) => (
+              <div key={doc._id}>
+                <h3>{doc.title}</h3>
+                <p>{doc.description}</p>
+              </div>
+            ))}
+          </div> */}
         </div>
         <div>
           <div className="flex justify-between px-3 py-2 bg-slate-100 text-lg">
@@ -173,29 +228,28 @@ const Homepage = () => {
             <div>Size</div>
             <div>Actions</div>
           </div>
-          {filteredFiles.map((file) => (
+          {filteredDocuments.map((file) => (
             <div
-              className="flex justify-between items-center px-3  "
               key={file.id}
+              className="flex justify-between items-center px-3  "
             >
-              <div className="flex gap-2 justify-center items-center ">
-                <input className="scale-125" type="checkbox" />
-                <img className="w-8" src="./images/files-logo.png" alt="" />
-                <div>{file.fileName}</div>
-              </div>
+              {/* <div className="flex gap-2 justify-center items-center "> */}
+              {/* <img className="w-8" src="./images/files-logo.png" alt="" /> */}
+              <div>{file.title}</div>
+              {/* </div> */}
               <div>{file.description}</div>
               <div>{file.size}</div>
               <div className="flex space-x-1 px-3 py-2">
                 <button
                   className="border-[1px] items-center p-2 rounded-xl flex gap-1"
-                  onClick={() => console.log(`View file ${file.id}`)}
+                  onClick={() => viewDocument(file._id)}
                 >
                   <FiEye />
                   View
                 </button>
                 <button
                   className="py-2 flex justify-center px-4 rounded-xl items-center"
-                  onClick={() => handleDelete(file.id)}
+                  onClick={() => handleDelete(file._id)}
                 >
                   <MdDelete />
                   Delete

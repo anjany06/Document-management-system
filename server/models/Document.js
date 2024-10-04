@@ -1,27 +1,16 @@
 const mongoose = require('mongoose');
 
-const { MongoClient, ServerApiVersion } = require('mongodb');
-const uri = "mongodb+srv://aceDocumentManager:AceDocumentManager@cluster0.cruqz.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
-
-// Create a MongoClient with a MongoClientOptions object to set the Stable API version
-const client = new MongoClient(uri, {
-  serverApi: {
-    version: ServerApiVersion.v1,
-    strict: true,
-    deprecationErrors: true,
-  }
+// Define the schema for the document
+const documentSchema = new mongoose.Schema({
+  title: { type: String, required: true },
+  description: String,
+  filePath: { type: String, required: true },
+  size: { type: Number, required: true },
+}, {
+  timestamps: true // Adds createdAt and updatedAt fields automatically
 });
 
-async function run() {
-  try {
-    // Connect the client to the server	(optional starting in v4.7)
-    await client.connect();
-    // Send a ping to confirm a successful connection
-    await client.db("admin").command({ ping: 1 });
-    console.log("Pinged your deployment. You successfully connected to MongoDB!");
-  } finally {
-    // Ensures that the client will close when you finish/error
-    await client.close();
-  }
-}
-run().catch(console.dir);
+// Create and export the Mongoose model
+const Document = mongoose.model('Document', documentSchema);
+
+module.exports = Document;
