@@ -17,7 +17,7 @@ const Homepage = () => {
   useEffect(() => {
     // Get all files on component mount
     axios
-      .get("http://localhost:3001/api/documents/files")
+      .get("https://document-management-system-api.vercel.app/documents/files")
       .then((response) => {
         setFiles(response.data);
       })
@@ -54,12 +54,12 @@ const Homepage = () => {
     formData.append("description", description);
 
     axios
-      .post("http://localhost:3001/api/documents/upload", formData, {
+      .post("https://document-management-system-api.vercel.app/documents/upload", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       })
       .then((response) => {
         axios
-          .get("http://localhost:3001/api/documents/files")
+          .get("https://document-management-system-api.vercel.app/documents/files")
           .then((response) => {
             setFiles(response.data);
           })
@@ -86,7 +86,7 @@ const Homepage = () => {
 
   // const handleDelete = aysnc (id) => {
   //   try{
-  //     const response = await axios.delete(`http://localhost:3001/api/documents/files/delete/${id}`);
+  //     const response = await axios.delete(`https://document-management-system-api.vercel.app/documents/files/delete/${id}`);
   //     if(response.status === 200){
 
   //     }
@@ -100,7 +100,7 @@ const Homepage = () => {
   const handleDelete = async (id) => {
     try {
       const response = await axios.delete(
-        `http://localhost:3001/api/documents/delete/${id}`
+        `https://document-management-system-api.vercel.app/documents/delete/${id}`
       );
       if (response.status === 200) {
         setFiles((prevDocuments) =>
@@ -122,7 +122,7 @@ const Homepage = () => {
     try {
       console.log(id);
       const response = await axios.get(
-        `http://localhost:3001/api/documents/view/${id}`
+        `https://document-management-system-api.vercel.app/documents/view/${id}`
       );
       console.log(response);
       // const url = window.URL.createObjectURL(new Blob([response.data]));
