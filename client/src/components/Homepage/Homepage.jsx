@@ -17,7 +17,7 @@ const Homepage = () => {
   useEffect(() => {
     // Get all files on component mount
     axios
-      .get("https://document-management-system-api.vercel.app/documents/files")
+      .get("http://localhost:3001/api/documents/files")
       .then((response) => {
         setFiles(response.data);
       })
@@ -54,12 +54,12 @@ const Homepage = () => {
     formData.append("description", description);
 
     axios
-      .post("https://document-management-system-api.vercel.app/documents/upload", formData, {
+      .post("http://localhost:3001/api/documents/upload", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       })
       .then((response) => {
         axios
-          .get("https://document-management-system-api.vercel.app/documents/files")
+          .get("http://localhost:3001/api/documents/files")
           .then((response) => {
             setFiles(response.data);
           })
@@ -86,7 +86,7 @@ const Homepage = () => {
 
   // const handleDelete = aysnc (id) => {
   //   try{
-  //     const response = await axios.delete(`https://document-management-system-api.vercel.app/documents/files/delete/${id}`);
+  //     const response = await axios.delete(`http://localhost:3001/api/documents/files/delete/${id}`);
   //     if(response.status === 200){
 
   //     }
@@ -100,7 +100,7 @@ const Homepage = () => {
   const handleDelete = async (id) => {
     try {
       const response = await axios.delete(
-        `https://document-management-system-api.vercel.app/documents/delete/${id}`
+        `http://localhost:3001/api/documents/delete/${id}`
       );
       if (response.status === 200) {
         setFiles((prevDocuments) =>
@@ -119,22 +119,18 @@ const Homepage = () => {
       file.title && file.title.toLowerCase().includes(searchTerm.toLowerCase())
   );
   const viewDocument = async (id) => {
-    try {
-      console.log(id);
-      const response = await axios.get(
-        `https://document-management-system-api.vercel.app/documents/view/${id}`
-      );
-      console.log(response);
-      // const url = window.URL.createObjectURL(new Blob([response.data]));
-      // const link = document.createElement("a");
-      // link.href = url;
-      // document.body.appendChild(link);
-      // link.click();
-    } catch (error) {
-      console.error("Error viewing document:", error);
-    }
+    const document = await axios.get(
+      `http://localhost:3001/api/documents/${id}`
+    );
+    const url = `https://docs.google.com/gview?url=${document.url}&embedded=true`;
+    window.open(url, "_blank");
   };
 
+  const handleViewDocument = (filePath) => {
+    const dropboxUrl = `https://www.dropbox.com/s/${filePath}`;
+    window.open(dropboxUrl, "_blank");
+    console.log(filePath);
+  };
   return (
     <>
       <nav className="flex justify-between px-10 py-3 ">
@@ -242,7 +238,8 @@ const Homepage = () => {
               <div className="flex space-x-1 px-3 py-2">
                 <button
                   className="border-[1px] items-center p-2 rounded-xl flex gap-1"
-                  onClick={() => viewDocument(file._id)}
+                  // onClick={() => viewDocument(file._id)}
+                  onClick={() => handleViewDocument(file.filePath)}
                 >
                   <FiEye />
                   View
