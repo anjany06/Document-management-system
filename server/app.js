@@ -16,9 +16,10 @@ mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log('MongoDB connected successfully'))
   .catch((error) => console.error('MongoDB connection error:', error));
 
-  app.use(cors({
-    origin: 'http://localhost:5173',
-  }));
+  app.use(cors());
+  app.use("/",(req,res)=>{
+    res.send("<h1>home req hit<h1/>");
+  })
 app.use(express.json());
 app.use('/uploads', express.static('uploads'));
 
