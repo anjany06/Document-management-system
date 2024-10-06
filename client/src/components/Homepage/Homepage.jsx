@@ -25,22 +25,6 @@ const Homepage = () => {
         console.error(error);
       });
   }, []);
-
-  // const recent = [
-  //   {
-  //     fileName: "My Projects",
-  //     location: "Folder: Main",
-  //   },
-  //   {
-  //     fileName: "My Projects",
-  //     location: "Folder: Main",
-  //   },
-  //   {
-  //     fileName: "My Projects",
-  //     location: "Folder: Main",
-  //   },
-  // ];
-
   const handleFileChange = (event) => {
     setFile(event.target.files[0]);
     setFileName(event.target.files[0].name);
@@ -76,26 +60,6 @@ const Homepage = () => {
     setFileName("");
     setDescription("");
   };
-
-  // const newFile = {
-  //   id: files.length + 1,
-  //   fileName,
-  //   description,
-  //   size: "167kb",
-  // };
-
-  // const handleDelete = aysnc (id) => {
-  //   try{
-  //     const response = await axios.delete(`http://localhost:3001/api/documents/files/delete/${id}`);
-  //     if(response.status === 200){
-
-  //     }
-  //     .then((response) => {
-  //       setFiles(files.filter((file) => file.id !== id));
-  //     })
-  //     .catch((error) => {
-  //       console.error(error);
-  //     });
 
   const handleDelete = async (id) => {
     try {
@@ -168,35 +132,9 @@ const Homepage = () => {
             onChange={(event) => setDescription(event.target.value)}
             placeholder="Description"
           />
-          {/* </form> */}
-          {/* <button className="border-[1px] items-center p-2 rounded-xl flex gap-1">
-            <FiFileText />
-            New File
-          </button>
-          <button className="border-[1px] items-center p-2 rounded-xl flex gap-1">
-            <FaRegFolderOpen />
-            Create Folder
-          </button>
-          <button className="border-[1px] py-2 flex justify-center px-4 rounded-xl items-center">
-            <HiDotsHorizontal />
-          </button> */}
         </div>
       </nav>
       <hr />
-      {/* <section className="flex flex-col px-10 py-3 gap-3">
-        <h1 className="text-xl font-semibold">Recently Used</h1>
-        <div className="flex flex-row space-x-5">
-          {recent.map((item, index) => (
-            <div className="flex flex-col gap-1" key={index}>
-              <div className="rounded-lg flex justify-center items-center bg-slate-100 w-[10vw] h-[6vw]">
-                <img className="w-10" src="./images/files-logo.png" />
-              </div>
-              <h4>{item.fileName}</h4>
-              <p className="text-sm">{item.location}</p>
-            </div>
-          ))}
-        </div>
-      </section> */}
       <section className="px-10 py-3 gap-3 flex flex-col">
         <h1 className="text-xl font-semibold">All Files</h1>
         <div className="border-[1px] items-center p-2 rounded-xl flex gap-1 w-80">
@@ -208,14 +146,6 @@ const Homepage = () => {
             value={searchTerm}
             onChange={handleSearch}
           />
-          {/* <div>
-            {filteredDocuments.map((doc) => (
-              <div key={doc._id}>
-                <h3>{doc.title}</h3>
-                <p>{doc.description}</p>
-              </div>
-            ))}
-          </div> */}
         </div>
         <div>
           <div className="flex justify-between px-3 py-2 bg-slate-100 text-lg">
