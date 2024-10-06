@@ -17,7 +17,7 @@ mongoose.connect(process.env.MONGO_URI)
   .catch((error) => console.error('MongoDB connection error:', error));
 
   app.use(cors({
-    origin: '',
+    origin: 'https://document-management-system-frontend.onrender.com',
   }));
 app.use(express.json());
 app.use('/uploads', express.static('uploads'));
