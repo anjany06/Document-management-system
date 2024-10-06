@@ -17,7 +17,7 @@ mongoose.connect(process.env.MONGO_URI)
   .catch((error) => console.error('MongoDB connection error:', error));
 
   app.use(cors({
-    origin: '',
+    origin: 'http://localhost:5173',
   }));
 app.use(express.json());
 app.use('/uploads', express.static('uploads'));
@@ -29,11 +29,11 @@ app.get('/', (req, res) => {
     res.send('Server is running');
 });
 
-//step 3 : heroku
+// //step 3 : heroku
 
-if(process.env.NODE_ENV == "production"){
-  app.use(express.static("client/build"));
-}
+// if(process.env.NODE_ENV == "production"){
+//   app.use(express.static("client/build"));
+// }
 
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
