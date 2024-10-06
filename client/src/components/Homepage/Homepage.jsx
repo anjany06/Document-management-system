@@ -17,7 +17,7 @@ const Homepage = () => {
   useEffect(() => {
     // Get all files on component mount
     axios
-      .get("http://localhost:3001/api/documents/files")
+      .get("https://document-management-system-sv10.onrender.com/api/documents/files")
       .then((response) => {
         setFiles(response.data);
       })
@@ -54,12 +54,12 @@ const Homepage = () => {
     formData.append("description", description);
 
     axios
-      .post("http://localhost:3001/api/documents/upload", formData, {
+      .post("https://document-management-system-sv10.onrender.com/api/documents/upload", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       })
       .then((response) => {
         axios
-          .get("http://localhost:3001/api/documents/files")
+          .get("https://document-management-system-sv10.onrender.com/api/documents/files")
           .then((response) => {
             setFiles(response.data);
           })
@@ -100,7 +100,7 @@ const Homepage = () => {
   const handleDelete = async (id) => {
     try {
       const response = await axios.delete(
-        `http://localhost:3001/api/documents/delete/${id}`
+        `https://document-management-system-sv10.onrender.com/api/documents/delete/${id}`
       );
       if (response.status === 200) {
         setFiles((prevDocuments) =>
@@ -120,7 +120,7 @@ const Homepage = () => {
   );
   const viewDocument = async (id) => {
     const document = await axios.get(
-      `http://localhost:3001/api/documents/${id}`
+      `https://document-management-system-sv10.onrender.com/api/documents/${id}`
     );
     const url = `https://docs.google.com/gview?url=${document.url}&embedded=true`;
     window.open(url, "_blank");
