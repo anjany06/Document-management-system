@@ -17,7 +17,9 @@ const Homepage = () => {
   useEffect(() => {
     // Get all files on component mount
     axios
-      .get("https://document-management-system-sv10.onrender.com/api/documents/files")
+      .get(
+        "https://document-management-system-sv10.onrender.com/api/documents/files"
+      )
       .then((response) => {
         setFiles(response.data);
       })
@@ -25,9 +27,34 @@ const Homepage = () => {
         console.error(error);
       });
   }, []);
+  // const handleFileChange = (event) => {
+  //   setFile(event.target.files[0]);
+  //   setFileName(event.target.files[0].name);
+  // };
+
   const handleFileChange = (event) => {
-    setFile(event.target.files[0]);
-    setFileName(event.target.files[0].name);
+    const file = event.target.files[0];
+    const fileType = file.type;
+    const fileExtension = file.name.split(".").pop().toLowerCase();
+
+    if (
+      ![
+        "application/pdf",
+        "application/msword",
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      ].includes(fileType) ||
+      !["pdf", "doc", "docx", "pptx", "xlsx"].includes(fileExtension)
+    ) {
+      alert(
+        "Invalid file format. Only PDF, Word, PowerPoint, and Excel files are allowed."
+      );
+      return;
+    }
+
+    setFile(file);
+    setFileName(file.name);
   };
 
   const handleUpload = () => {
@@ -38,12 +65,18 @@ const Homepage = () => {
     formData.append("description", description);
 
     axios
-      .post("https://document-management-system-sv10.onrender.com/api/documents/upload", formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      })
+      .post(
+        "https://document-management-system-sv10.onrender.com/api/documents/upload",
+        formData,
+        {
+          headers: { "Content-Type": "multipart/form-data" },
+        }
+      )
       .then((response) => {
         axios
-          .get("https://document-management-system-sv10.onrender.com/api/documents/files")
+          .get(
+            "https://document-management-system-sv10.onrender.com/api/documents/files"
+          )
           .then((response) => {
             setFiles(response.data);
           })
